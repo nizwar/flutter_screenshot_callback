@@ -1,22 +1,19 @@
 import 'dart:io';
 import 'dart:async';
-
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ScreenshotCallback {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter.moum/screenshot_callback');
+  static const MethodChannel _channel = const MethodChannel('flutter.moum/screenshot_callback');
 
   /// Functions to execute when callback fired.
-  List<VoidCallback> onCallbacks = <VoidCallback>[];
+  List<Function(String value)> onCallbacks = [];
 
   /// If `true`, the user will be asked to grant storage permissions when
   /// callback is added.
   ///
   /// Defaults to `true`.
-   bool? requestPermissions;
+  bool? requestPermissions;
 
   ScreenshotCallback({this.requestPermissions}) {
     requestPermissions ??= true;
@@ -33,16 +30,16 @@ class ScreenshotCallback {
   }
 
   /// Add void callback.
-  void addListener(VoidCallback callback) {
+  void addListener(Function(String value)? callback) {
     assert(callback != null, 'A non-null callback must be provided.');
-    onCallbacks.add(callback);
+    if (callback != null) onCallbacks.add(callback);
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case 'onCallback':
         for (final callback in onCallbacks) {
-          callback();
+          callback.call(call.arguments);
         }
         break;
       default:

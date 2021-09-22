@@ -22,21 +22,19 @@ class _MyAppState extends State<MyApp> {
 
   void init() async {
     await initScreenshotCallback();
-
   }
 
   //It must be created after permission is granted.
   Future<void> initScreenshotCallback() async {
     screenshotCallback = ScreenshotCallback();
-
-    screenshotCallback.addListener(() {
+    screenshotCallback.addListener((value) {
       setState(() {
-        text = "Screenshot callback Fired!";
+        text = "Screenshot callback Fired! $value";
       });
     });
 
-    screenshotCallback.addListener(() {
-      print("We can add multiple listeners ");
+    screenshotCallback.addListener((value) {
+      print("We can add multiple listeners $value");
     });
   }
 

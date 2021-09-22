@@ -45,13 +45,13 @@ public class ScreenshotCallbackPlugin implements MethodCallHandler {
 
                 fileObserver = new FileObserver(files, FileObserver.CREATE) {
                     @Override
-                    public void onEvent(int event, String path) {
+                    public void onEvent(int event, final String path) {
                         //Log.d(TAG, "androidX onEvent");
                         if (event == FileObserver.CREATE) {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    channel.invokeMethod("onCallback", null);
+                                    channel.invokeMethod("onCallback", path);
                                 }
                             });
                         }
@@ -64,13 +64,13 @@ public class ScreenshotCallbackPlugin implements MethodCallHandler {
                     //Log.d(TAG, "onMethodCall: "+path.getPath());
                     fileObserver = new FileObserver(path.getPath(), FileObserver.CREATE) {
                         @Override
-                        public void onEvent(int event, String path) {
+                        public void onEvent(int event, final String path) {
                             //Log.d(TAG, "android others onEvent");
                             if (event == FileObserver.CREATE) {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        channel.invokeMethod("onCallback", null);
+                                        channel.invokeMethod("onCallback", path);
                                     }
                                 });
                             }
